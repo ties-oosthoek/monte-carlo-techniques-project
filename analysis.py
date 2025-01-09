@@ -8,15 +8,15 @@ def try_gather_data_and_plot(state,beta,k,n,measurements):
     try_plot_data(len(state),beta,measurements)
 
 def try_gather_data(state,beta,k,n,measurements):
-    with h5py.File('lattice.hdf5','a') as f:
-        width = len(state)
-        if not f"actions_w{width}_b{np.round(beta,decimals=2)}" in f:
+    width = len(state)
+    with h5py.File(f'data/action-per-beta_w{width}.hdf5','a') as f:
+        if not f"actions_b{np.round(beta,decimals=2)}" in f:
             actions = sim.run_simulation(state,beta,k,n,measurements)
-            f.create_dataset(f"actions_w{width}_b{np.round(beta,decimals=2)}",data=actions)
+            f.create_dataset(f"actions_b{np.round(beta,decimals=2)}",data=actions)
 
 def try_plot_data(width,beta,measurements):
-    with h5py.File('lattice.hdf5','r') as f:
-        average_plaquette_actions = f[f"actions_w{width}_b{np.round(beta,decimals=2)}"][()]
+    with h5py.File(f'data/action-per-beta_w{width}.hdf5','r') as f:
+        average_plaquette_actions = f[f"actions_b{np.round(beta,decimals=2)}"][()]
 
         plt.scatter(np.linspace(1,measurements,measurements),average_plaquette_actions)
         plt.xlabel("iterations")
